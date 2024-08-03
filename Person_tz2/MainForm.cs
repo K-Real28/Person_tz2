@@ -38,29 +38,32 @@ namespace Person_tz2
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            var form = new EditPersonForm();
-            if (form.ShowDialog() == DialogResult.OK)
+            using (var form = new EditPersonForm())
             {
-                _context.People.Add(form.Person);
-                _context.SaveChanges();
-                LoadData();
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    _context.People.Add(form.Person);
+                    _context.SaveChanges();
+                    LoadData();
+                }
             }
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (dataGridView.SelectedRows.Count > 0)
+            if (dataGridView.CurrentRow != null)
             {
-                var personalId = dataGridView.SelectedRows[0].Cells[0].Value.ToString();
-                var person = _context.People.Find(personalId);
+                var personId = (string)dataGridView.CurrentRow.Cells["PersonalId"].Value;
+                var person = _context.People.FirstOrDefault(p => p.PersonalId == personId);
                 if (person != null)
                 {
-                    var form = new EditPersonForm(person);
-                    if (form.ShowDialog() == DialogResult.OK)
+                    using (var form = new EditPersonForm(person))
                     {
-                        _context.Entry(person).CurrentValues.SetValues(form.Person);
-                        _context.SaveChanges();
-                        LoadData();
+                        if (form.ShowDialog() == DialogResult.OK)
+                        {
+                            _context.SaveChanges();
+                            LoadData();
+                        }
                     }
                 }
             }
@@ -68,10 +71,10 @@ namespace Person_tz2
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (dataGridView.SelectedRows.Count > 0)
+            if (dataGridView.CurrentRow != null)
             {
-                var personalId = dataGridView.SelectedRows[0].Cells[0].Value.ToString();
-                var person = _context.People.Find(personalId);
+                var personId = (string)dataGridView.CurrentRow.Cells["PersonalId"].Value;
+                var person = _context.People.FirstOrDefault(p => p.PersonalId == personId);
                 if (person != null)
                 {
                     _context.People.Remove(person);

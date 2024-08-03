@@ -12,6 +12,8 @@ namespace Person_tz2
 {
     public partial class EditPersonForm : Form
     {
+        private System.Windows.Forms.Timer timer;
+        private TimeSpan timeElapsed;
         public Person Person { get; private set; }
         public EditPersonForm()
         {
@@ -52,28 +54,49 @@ namespace Person_tz2
             txtPhoneNumber.Text = Person.PhoneNumber;
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        
+        
+        private bool ValidateInputs()
         {
-            if (ValidateChildren())
-            {
-                // Save data
-                Person.PersonalId = txtPersonalId.Text;
-                Person.LastName = txtLastName.Text;
-                Person.FirstName = txtFirstName.Text;
-                Person.MiddleName = txtMiddleName.Text;
-                Person.BirthDate = dtpBirthDate.Value;
-                Person.Email = txtEmail.Text;
-                Person.PhoneNumber = txtPhoneNumber.Text;
-
-                DialogResult = DialogResult.OK;
-            }
+            // Добавьте здесь проверку полей
+            return !string.IsNullOrEmpty(txtPersonalId.Text) &&
+                   !string.IsNullOrEmpty(txtLastName.Text) &&
+                   !string.IsNullOrEmpty(txtFirstName.Text) &&
+                   !string.IsNullOrEmpty(txtMiddleName.Text) &&
+                   dtpBirthDate.Value != DateTime.MinValue &&
+                   !string.IsNullOrEmpty(txtEmail.Text) &&
+                   !string.IsNullOrEmpty(txtPhoneNumber.Text);
+        }
+        private void UpdatePerson()
+        {
+            // Обновляем данные существующего объекта Person
+            this.Person.PersonalId = txtPersonalId.Text;
+            this.Person.LastName = txtLastName.Text;
+            this.Person.FirstName = txtFirstName.Text;
+            this.Person.MiddleName = txtMiddleName.Text;
+            this.Person.BirthDate = dtpBirthDate.Value;
+            this.Person.Email = txtEmail.Text;
+            this.Person.PhoneNumber = txtPhoneNumber.Text;
         }
 
+        private void CreateNewPerson()
+        {
+            // Создаем новый объект Person с данными из формы
+            this.Person = new Person
+            {
+                PersonalId = txtPersonalId.Text,
+                LastName = txtLastName.Text,
+                FirstName = txtFirstName.Text,
+                MiddleName = txtMiddleName.Text,
+                BirthDate = dtpBirthDate.Value,
+                Email = txtEmail.Text,
+                PhoneNumber = txtPhoneNumber.Text
+            };
+        }
         private void EditPersonForm_Load(object sender, EventArgs e)
         {   
         }
-        private System.Windows.Forms.Timer timer;
-        private TimeSpan timeElapsed;
+        
         private void InitializeTimer()
         {
             timer = new Timer();
@@ -82,6 +105,7 @@ namespace Person_tz2
             timer.Start();
 
             timeElapsed = TimeSpan.Zero;
+            UpdateTimerLabel();
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -92,6 +116,41 @@ namespace Person_tz2
         private void UpdateTimerLabel()
         {
             lblTimer.Text = timeElapsed.ToString(@"hh\:mm\:ss"); // Форматируем время
+        }
+
+        private void btnSave_Click_1(object sender, EventArgs e)
+        {
+            // Проверка валидации всех полей формы
+            if (ValidateChildren() && ValidateInputs())
+            {
+                // Если редактируем существующую запись
+                if (this.Person != null)
+                {
+                    UpdatePerson();
+                }
+                else // Если создаем новую запись
+                {
+                    CreateNewPerson();
+                }
+
+                // Сохранение данных
+                Person.PersonalId = txtPersonalId.Text;
+                Person.LastName = txtLastName.Text;
+                Person.FirstName = txtFirstName.Text;
+                Person.MiddleName = txtMiddleName.Text;
+                Person.BirthDate = dtpBirthDate.Value;
+                Person.Email = txtEmail.Text;
+                Person.PhoneNumber = txtPhoneNumber.Text;
+
+                // Закрытие формы с результатом OK
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            else
+            {
+                // Сообщение о некорректности заполнения формы
+                MessageBox.Show("Пожалуйста, заполните все поля корректно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
