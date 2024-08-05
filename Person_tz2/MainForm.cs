@@ -19,10 +19,7 @@ namespace Person_tz2
             _context = new AppDbContext();
             LoadData();
         }
-        public void MainForm_Load(object sender, EventArgs e)
-        {
-         
-        }
+        public void MainForm_Load(object sender, EventArgs e){}
         private void LoadData()
         {
             var people = _context.People.Select(p => new
@@ -34,6 +31,12 @@ namespace Person_tz2
             }).ToList();
 
             dataGridView.DataSource = people;
+
+            // Изменение заголовков столбцов
+            dataGridView.Columns[0].HeaderText = "Идентификатор";
+            dataGridView.Columns[1].HeaderText = "Фамилия";
+            dataGridView.Columns[2].HeaderText = "Имя";
+            dataGridView.Columns[3].HeaderText = "Отчество";
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -100,12 +103,12 @@ namespace Person_tz2
 
                     if (saveFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        // Serialize and save to XML
                         System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(Person));
                         using (var writer = new System.IO.StreamWriter(saveFileDialog.FileName))
                         {
                             serializer.Serialize(writer, person);
                         }
+                        MessageBox.Show("Файл успешно сохранен.", "Сохранение завершено", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
