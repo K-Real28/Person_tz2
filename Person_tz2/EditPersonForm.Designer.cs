@@ -122,9 +122,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dtpBirthDate.CalendarMonthBackground = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(225)))), ((int)(((byte)(219)))));
             this.dtpBirthDate.Location = new System.Drawing.Point(314, 203);
+            this.dtpBirthDate.MaxDate = new System.DateTime(2006, 12, 31, 0, 0, 0, 0);
+            this.dtpBirthDate.MinDate = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
             this.dtpBirthDate.Name = "dtpBirthDate";
             this.dtpBirthDate.Size = new System.Drawing.Size(201, 22);
             this.dtpBirthDate.TabIndex = 7;
+            this.dtpBirthDate.Value = new System.DateTime(2005, 12, 31, 0, 0, 0, 0);
             // 
             // timer1
             // 
@@ -274,7 +277,8 @@
             this.Text = "Форма добавления/изменения";
             this.Load += new System.EventHandler(this.EditPersonForm_Load);
             this.ResumeLayout(false);
-            this.PerformLayout();      
+            this.PerformLayout();
+
         }
 
         #endregion

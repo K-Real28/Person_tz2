@@ -11,7 +11,7 @@ namespace Person_tz2
     [Table("Persons")]
     public class Person
     {
-        [Key]
+        [Key]        
         [StringLength(20)]
         public string PersonalId { get; set; }
 

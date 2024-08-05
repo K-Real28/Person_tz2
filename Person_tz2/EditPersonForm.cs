@@ -13,13 +13,9 @@ namespace Person_tz2
         public EditPersonForm()
         {
             InitializeComponent();
-            Person = new Person
-            {
-                BirthDate = DateTime.Today
-            };
+            Person = new Person { BirthDate = new DateTime(2000,1,1) };
             BindControls();
             InitializeTimer();
-
             toolTip = new ToolTip();
 
             // Настройка подсказок для каждого элемента
@@ -61,7 +57,63 @@ namespace Person_tz2
             txtEmail.Text = Person.Email;
             txtPhoneNumber.Text = Person.PhoneNumber;
         }
+        private void EditPersonForm_Load(object sender, EventArgs e)
+        {
+        }
+        private void InitializeTimer()
+        {
+            timer = new Timer();
+            timer.Interval = 1000; // 1 second
+            timer.Tick += timer1_Tick;
+            timer.Start();
 
+            timeElapsed = TimeSpan.Zero;
+            UpdateTimerLabel();
+        }
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            timeElapsed = timeElapsed.Add(TimeSpan.FromSeconds(1)); // Добавляем 1 секунду
+            UpdateTimerLabel();
+        }
+        private void UpdateTimerLabel()
+        {
+            lblTimer.Text = timeElapsed.ToString(@"hh\:mm\:ss"); // Форматируем время
+        }
+        private void btnSave_Click_1(object sender, EventArgs e)
+        {
+            // Проверка валидации всех полей формы
+            if (ValidateChildren() && ValidateInputs())
+            {
+                // Если редактируем существующую запись
+                if (this.Person != null)
+                {
+                    UpdatePerson();
+                }
+                else // Если создаем новую запись
+                {
+                    CreateNewPerson();
+                }
+
+                // Сохранение данных
+                Person.PersonalId = txtPersonalId.Text;
+                Person.LastName = txtLastName.Text;
+                Person.FirstName = txtFirstName.Text;
+                Person.MiddleName = txtMiddleName.Text;
+                Person.BirthDate = dtpBirthDate.Value;
+                Person.Email = txtEmail.Text;
+                Person.PhoneNumber = txtPhoneNumber.Text;
+
+                // Закрытие формы с результатом OK
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+                MessageBox.Show("Изменение завершено.", "Обновление данных", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                // Сообщение о некорректности заполнения формы
+                MessageBox.Show("Пожалуйста, заполните все поля корректно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         private bool ValidateInputs()
         {
             // Проверка персонального идентификатора (20 цифр)
@@ -134,69 +186,11 @@ namespace Person_tz2
                 return false;
             }
         }
-
         // Метод для проверки корректности номера телефона
         private bool IsValidPhoneNumber(string phoneNumber)
         {
             // Проверка формата телефона (+код страны, код оператора, номер)
             return System.Text.RegularExpressions.Regex.IsMatch(phoneNumber, @"^\+\d{1,3}\d{3}\d{7}$");
-        }
-        private void EditPersonForm_Load(object sender, EventArgs e)
-        {
-        }
-        private void InitializeTimer()
-        {
-            timer = new Timer();
-            timer.Interval = 1000; // 1 second
-            timer.Tick += timer1_Tick;
-            timer.Start();
-
-            timeElapsed = TimeSpan.Zero;
-            UpdateTimerLabel();
-        }
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            timeElapsed = timeElapsed.Add(TimeSpan.FromSeconds(1)); // Добавляем 1 секунду
-            UpdateTimerLabel();
-        }
-        private void UpdateTimerLabel()
-        {
-            lblTimer.Text = timeElapsed.ToString(@"hh\:mm\:ss"); // Форматируем время
-        }
-        private void btnSave_Click_1(object sender, EventArgs e)
-        {
-            // Проверка валидации всех полей формы
-            if (ValidateChildren() && ValidateInputs())
-            {
-                // Если редактируем существующую запись
-                if (this.Person != null)
-                {
-                    UpdatePerson();
-                }
-                else // Если создаем новую запись
-                {
-                    CreateNewPerson();
-                }
-
-                // Сохранение данных
-                Person.PersonalId = txtPersonalId.Text;
-                Person.LastName = txtLastName.Text;
-                Person.FirstName = txtFirstName.Text;
-                Person.MiddleName = txtMiddleName.Text;
-                Person.BirthDate = dtpBirthDate.Value;
-                Person.Email = txtEmail.Text;
-                Person.PhoneNumber = txtPhoneNumber.Text;
-
-                // Закрытие формы с результатом OK
-                this.DialogResult = DialogResult.OK;
-                this.Close();
-                MessageBox.Show("Изменение завершено.", "Обновление данных", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                // Сообщение о некорректности заполнения формы
-                MessageBox.Show("Пожалуйста, заполните все поля корректно.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
         private void UpdatePerson()
         {
@@ -212,7 +206,6 @@ namespace Person_tz2
 
         private void CreateNewPerson()
         {
-            // Создаем новый объект Person с данными из формы
             this.Person = new Person
             {
                 PersonalId = txtPersonalId.Text,

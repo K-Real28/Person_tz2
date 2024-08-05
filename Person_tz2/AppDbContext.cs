@@ -18,7 +18,6 @@ public class AppDbContext : DbContext
     {
         modelBuilder.Entity<Person>()
             .Property(p => p.PersonalId)
-            .IsFixedLength()
             .HasMaxLength(20);
 
         modelBuilder.Entity<Person>()

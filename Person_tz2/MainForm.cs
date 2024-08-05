@@ -13,6 +13,7 @@ namespace Person_tz2
     public partial class MainForm : Form
     {
         private AppDbContext _context;
+
         public MainForm()
         {
             InitializeComponent();
@@ -40,7 +41,7 @@ namespace Person_tz2
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
-        {
+        {          
             using (var form = new EditPersonForm())
             {
                 if (form.ShowDialog() == DialogResult.OK)
@@ -71,7 +72,6 @@ namespace Person_tz2
                 }
             }
         }
-
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (dataGridView.CurrentRow != null)
