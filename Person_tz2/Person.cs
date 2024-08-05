@@ -17,7 +17,7 @@ namespace Person_tz2
 
         [Required]
         [StringLength(50)]
-        [RegularExpression(@"^[А-Яа-я]+$", ErrorMessage = "Должны быть только кириллические буквы")]
+        [RegularExpression(@"^[А-Яа-я]+$")]
         public string LastName { get; set; }
 
         [Required]
@@ -43,8 +43,6 @@ namespace Person_tz2
         [Required]
         [StringLength(100)]
         public string PhoneNumber { get; set; }
-
-        // Method to validate the data
         public bool IsValid()
         {
             return !string.IsNullOrEmpty(PersonalId) &&

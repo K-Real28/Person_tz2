@@ -34,7 +34,7 @@ namespace Person_tz2
             dataGridView.DataSource = people;
 
             // Изменение заголовков столбцов
-            dataGridView.Columns[0].HeaderText = "Идентификатор";
+            dataGridView.Columns[0].HeaderText = "ID";
             dataGridView.Columns[1].HeaderText = "Фамилия";
             dataGridView.Columns[2].HeaderText = "Имя";
             dataGridView.Columns[3].HeaderText = "Отчество";

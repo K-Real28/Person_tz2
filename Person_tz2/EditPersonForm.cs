@@ -14,7 +14,6 @@ namespace Person_tz2
         {
             InitializeComponent();
             Person = new Person { BirthDate = new DateTime(2000,1,1) };
-            BindControls();
             InitializeTimer();
             toolTip = new ToolTip();
 
@@ -35,6 +34,7 @@ namespace Person_tz2
             BindControls();
             LoadData();
             InitializeTimer();
+            txtPersonalId.ReadOnly = true;
         }
         private void BindControls()
         {
@@ -63,7 +63,7 @@ namespace Person_tz2
         private void InitializeTimer()
         {
             timer = new Timer();
-            timer.Interval = 1000; // 1 second
+            timer.Interval = 1000; // 1 секунда
             timer.Tick += timer1_Tick;
             timer.Start();
 
@@ -72,28 +72,26 @@ namespace Person_tz2
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
-            timeElapsed = timeElapsed.Add(TimeSpan.FromSeconds(1)); // Добавляем 1 секунду
+            timeElapsed = timeElapsed.Add(TimeSpan.FromSeconds(1)); // Добавляю 1 секунду
             UpdateTimerLabel();
         }
         private void UpdateTimerLabel()
         {
-            lblTimer.Text = timeElapsed.ToString(@"hh\:mm\:ss"); // Форматируем время
+            lblTimer.Text = timeElapsed.ToString(@"hh\:mm\:ss"); // Форматирую время
         }
         private void btnSave_Click_1(object sender, EventArgs e)
         {
             // Проверка валидации всех полей формы
             if (ValidateChildren() && ValidateInputs())
             {
-                // Если редактируем существующую запись
                 if (this.Person != null)
                 {
                     UpdatePerson();
                 }
-                else // Если создаем новую запись
+                else
                 {
                     CreateNewPerson();
                 }
-
                 // Сохранение данных
                 Person.PersonalId = txtPersonalId.Text;
                 Person.LastName = txtLastName.Text;
@@ -116,7 +114,7 @@ namespace Person_tz2
         }
         private bool ValidateInputs()
         {
-            // Проверка персонального идентификатора (20 цифр)
+            // Проверка ид
             if (string.IsNullOrWhiteSpace(txtPersonalId.Text) ||
                 txtPersonalId.Text.Length > 20 ||
                 !txtPersonalId.Text.All(char.IsDigit))
@@ -125,7 +123,7 @@ namespace Person_tz2
                 return false;
             }
 
-            // Проверка фамилии (до 50 символов кириллицы)
+            // Проверка фамилии
             if (string.IsNullOrWhiteSpace(txtLastName.Text) ||
                 txtLastName.Text.Length > 50 ||
                 !txtLastName.Text.All(c => char.IsLetter(c) && IsCyrillic(c)))
@@ -134,7 +132,7 @@ namespace Person_tz2
                 return false;
             }
 
-            // Проверка имени (до 50 символов кириллицы)
+            // Проверка имени
             if (string.IsNullOrWhiteSpace(txtFirstName.Text) ||
                 txtFirstName.Text.Length > 50 ||
                 !txtFirstName.Text.All(c => char.IsLetter(c) && IsCyrillic(c)))
@@ -143,7 +141,7 @@ namespace Person_tz2
                 return false;
             }
 
-            // Проверка отчества (до 50 символов кириллицы)
+            // Проверка отчества
             if (string.IsNullOrWhiteSpace(txtMiddleName.Text) ||
                 txtMiddleName.Text.Length > 50 ||
                 !txtMiddleName.Text.All(c => char.IsLetter(c) && IsCyrillic(c)))
@@ -173,7 +171,7 @@ namespace Person_tz2
             return c >= 'А' && c <= 'я' || c == 'ё' || c == 'Ё';
         }
 
-        // Метод для проверки корректности электронной почты
+        // Метод для проверки электронной почты
         private bool IsValidEmail(string email)
         {
             try
@@ -186,16 +184,16 @@ namespace Person_tz2
                 return false;
             }
         }
-        // Метод для проверки корректности номера телефона
+        // Метод для проверки номера телефона
         private bool IsValidPhoneNumber(string phoneNumber)
         {
-            // Проверка формата телефона (+код страны, код оператора, номер)
+            // Проверка формата телефона
             return System.Text.RegularExpressions.Regex.IsMatch(phoneNumber, @"^\+\d{1,3}\d{3}\d{7}$");
         }
         private void UpdatePerson()
         {
-            // Обновляем данные существующего объекта Person
-            this.Person.PersonalId = txtPersonalId.Text;
+            // Обновляю данные существующего объекта Person
+            this.Person.PersonalId = txtPersonalId.Text;            
             this.Person.LastName = txtLastName.Text;
             this.Person.FirstName = txtFirstName.Text;
             this.Person.MiddleName = txtMiddleName.Text;

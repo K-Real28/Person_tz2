@@ -41,5 +41,3 @@ public class AppDbContext : DbContext
             .HasMaxLength(100);
     }
 }
-
-
